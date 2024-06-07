@@ -23,10 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-h7@*v*0kjhs!s7*q!ac7c#(qi2vh9r5jo#06hmw*$$7udhy%fo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+
+if DEBUG:
+    INTERNAL_IPS = type("c", (), {"__contains__": lambda *a: True})()
 
 # Application definition
 
@@ -42,6 +46,7 @@ INSTALLED_APPS = [
     'service_apps.services.apps.ServicesConfig',
 
     'rest_framework',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'service.urls'
