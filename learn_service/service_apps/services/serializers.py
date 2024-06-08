@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Subscription, Service, Plan
+
+from .models import Plan, Service, Subscription
 
 
 class PlanSerializer(serializers.ModelSerializer):
@@ -15,10 +16,12 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-    client_company = serializers.CharField(source='client.company_name')
-    service = ServiceSerializer(read_only=True)
-    plan = PlanSerializer(read_only=True)
+    client_name = serializers.CharField(source='client.company_name')
+    client_email = serializers.EmailField(source='client.user.email')
+    service_name = serializers.CharField(source='service.name')
+
+    plan = PlanSerializer()
 
     class Meta:
         model = Subscription
-        fields = ('id', 'client_company', 'service', 'plan')
+        fields = ('id', 'plan_id', 'client_name', 'client_email', 'service_name', 'plan')
