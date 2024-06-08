@@ -24,3 +24,20 @@ services:
       - POSTGRES_DB=dbservice
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
+
+  redis:
+    image: redis:7.0.5-alpine
+    hostname: redis
+
+  worker:
+    build:
+      context: .
+    hostname: worker
+    entrypoint: celery
+    command: -A celery_app.app worker --loglevel=info
+    volumes:
+      - ./learn_service:/service
+    links:
+      - redis
+    depends_on:
+      - redis

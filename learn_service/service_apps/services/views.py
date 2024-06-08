@@ -1,10 +1,10 @@
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from django.db.models import F, Prefetch, Sum
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from .models import Subscription, Client
+from .models import Client, Subscription
 from .serializers import SubscriptionSerializer
-from django.db.models import Prefetch, F, Sum
 
 # Create your views here.
 
