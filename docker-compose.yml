@@ -60,6 +60,11 @@ services:
     links:
       - redis
     depends_on:
+      - worker
       - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     ports:
       - '5555:5555'
