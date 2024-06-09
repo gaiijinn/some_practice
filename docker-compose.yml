@@ -40,13 +40,19 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - DB_HOST=database
+      - DB_NAME=dbservice
+      - DB_USER=admin
+      - DB_PASSWORD=admin
     command: -A service worker -l info
     volumes:
       - ./learn_service:/service
     links:
+      - database
       - redis
     depends_on:
       - redis
+      - database
 
 
   flower:
