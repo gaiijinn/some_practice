@@ -35,10 +35,5 @@ class Subscription(models.Model):
     plan = models.ForeignKey(to=Plan, on_delete=models.PROTECT, related_name='subscription')
     price = models.PositiveIntegerField(default=0)
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, save_model=True):
-        if save_model:
-            math_final_price.delay(subscription_id=self.id)
-        return super().save(force_insert=False, force_update=False, using=None, update_fields=None)
-
     def __str__(self):
         return f'{self.client.company_name} - {self.service.name}'

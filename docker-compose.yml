@@ -54,7 +54,6 @@ services:
       - redis
       - database
 
-
   flower:
     build:
       context: .

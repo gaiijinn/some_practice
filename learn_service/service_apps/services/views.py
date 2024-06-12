@@ -13,10 +13,10 @@ class SubscriptionReadOnlyViewSet(ReadOnlyModelViewSet):
     queryset = Subscription.objects.all().select_related('service', 'plan').prefetch_related(
         Prefetch('client',
                  queryset=Client.objects.all().select_related('user').only('company_name', 'user__email')
-                 ))
+                 )).order_by('-id')
     # ).annotate(final_price=(F('service__full_price') -
     #                         F('service__full_price') *
-    #                         F('plan__discount_percent') / 100.00))
+    #                         F('plan__discount_percent') / 100.00)) # на уровне бд
 
     serializer_class = SubscriptionSerializer
 
@@ -24,6 +24,7 @@ class SubscriptionReadOnlyViewSet(ReadOnlyModelViewSet):
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
 
+        # уровень питона
         response_data = {'result': response.data, 'total_sum': self.get_queryset().aggregate(total=Sum('price'))}
         response.data = response_data  # делаем вложеность
 
