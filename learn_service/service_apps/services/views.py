@@ -14,13 +14,10 @@ class SubscriptionReadOnlyViewSet(ReadOnlyModelViewSet):
         Prefetch('client',
                  queryset=Client.objects.all().select_related('user').only('company_name', 'user__email')
                  )).order_by('-id')
-    # ).annotate(final_price=(F('service__full_price') -
-    #                         F('service__full_price') *
-    #                         F('plan__discount_percent') / 100.00)) # на уровне бд
 
     serializer_class = SubscriptionSerializer
 
-    @method_decorator(cache_page(60 * 2))
+    #@method_decorator(cache_page(60 * 2))
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
 
