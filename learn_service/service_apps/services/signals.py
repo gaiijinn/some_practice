@@ -1,12 +1,14 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 from .models import Plan, Service
-from .tasks import math_final_price
+from .tasks import math_final_price, set_comment
 
 
 def price_updater(instance: object):
     for subs in instance.subscription.all():
         math_final_price.delay(subs.id)
+        set_comment.delay(subs.id)
 
 
 @receiver(post_save, sender=Plan)
