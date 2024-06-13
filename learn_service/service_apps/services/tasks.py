@@ -1,6 +1,7 @@
 import datetime
 import time
-
+from django.core.cache import cache
+from django.conf import settings
 from celery import shared_task
 from celery_singleton import Singleton
 from django.db import transaction
@@ -24,13 +25,18 @@ def math_final_price(subscription_id):
         subs.price = subs.annotated_price
         subs.save()
 
+    cache.delete(settings.PRICE_CACHE_NAME)
+
 
 @shared_task()
 def set_comment(subscription_id):
     from .models import Subscription
 
     with transaction.atomic():  # блокируем доступ пока транзакция не закончится
-        subs = Subscription.objects.select_for_update().filter(id=subscription_id)
-        time.sleep(27)
-        subs.comments = str(datetime.datetime.now())
-        subs.save()
+        subs = Subscription.objects.select_for_update().get(id=subscription_id)
+        if subs:
+            time.sleep(27)
+            subs.comment = str(datetime.datetime.now())
+            subs.save()
+
+    cache.delete(settings.PRICE_CACHE_NAME)

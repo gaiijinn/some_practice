@@ -1,7 +1,10 @@
 from django.db.models import F, Prefetch, Sum
+from django.core.cache import cache
+from django.conf import settings
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework.viewsets import ReadOnlyModelViewSet
+
 
 from .models import Client, Subscription
 from .serializers import SubscriptionSerializer
@@ -21,8 +24,16 @@ class SubscriptionReadOnlyViewSet(ReadOnlyModelViewSet):
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
 
+        price_cache = cache.get(settings.PRICE_CACHE_NAME)
+
+        if price_cache:
+            total_sum = price_cache
+        else:
+            total_sum = self.get_queryset().aggregate(total=Sum('price'))
+            cache.set(settings.PRICE_CACHE_NAME, total_sum, 60)
+
         # уровень питона
-        response_data = {'result': response.data, 'total_sum': self.get_queryset().aggregate(total=Sum('price'))}
+        response_data = {'result': response.data, 'total_sum': total_sum}
         response.data = response_data  # делаем вложеность
 
         return response

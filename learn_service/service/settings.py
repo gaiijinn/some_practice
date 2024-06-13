@@ -169,6 +169,9 @@ CACHES = {
         'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}',
     }
 }
+
+PRICE_CACHE_NAME = 'price_cache'
+
 # Celery[redis]
 
 CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'
