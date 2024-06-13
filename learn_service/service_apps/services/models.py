@@ -37,6 +37,15 @@ class Subscription(models.Model):
     price = models.PositiveIntegerField(default=0, blank=True)
     comment = models.CharField(max_length=128, null=True, blank=True)
 
+    field_a = models.CharField(max_length=128, default='')
+    field_b = models.CharField(max_length=128, default='')
+
+    # индекс для двух полей, чтобы искать вместе (составной индекс) если фильтровать по 1 полю индекса не будет
+    class Meta:
+        indexes = [
+            models.Index(fields=['field_a', 'field_b'])
+        ]
+
     def __str__(self):
         return f'{self.client.company_name} - {self.service.name}'
 
